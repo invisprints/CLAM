@@ -43,7 +43,7 @@ class WholeSlideImage(object):
     
     def getMaxObjectivteMagnification(self):
         if 'aperio.AppMag' in self.wsi.properties:
-            return int(self.wsi.properties['aperio.AppMag'])
+            return int(float(self.wsi.properties['aperio.AppMag']))
         elif 'openslide.mpp-x' in self.wsi.properties:
             if abs(float(self.wsi.properties['openslide.mpp-x'])-0.25) < 0.1:
                 return 40

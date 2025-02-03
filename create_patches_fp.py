@@ -224,7 +224,10 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 		print("segmentation took {} seconds".format(seg_time_elapsed))
 		print("patching took {} seconds".format(patch_time_elapsed))
 		print("stitching took {} seconds".format(stitch_time_elapsed))
-		df.loc[idx, 'status'] = 'processed'
+		if pd.isna(df.loc[idx, 'status']):
+			df.loc[idx, 'status'] = 'processed'
+		else:
+			df.loc[idx, 'status'] = 'processed, ' + df.loc[idx, 'status']
 
 		seg_times += seg_time_elapsed
 		patch_times += patch_time_elapsed
