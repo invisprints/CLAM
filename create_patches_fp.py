@@ -196,11 +196,10 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 		patch_time_elapsed = -1 # Default time
 		if patch:
-			if magnification:
-				if WSI_object.max_objective_magnification is None:
-					df.loc[idx, 'status'] = 'WSI do not has the attribute of objective magnification.'
-					print('WSI do not has the attribute of objective magnification.')
-					continue
+			if WSI_object.max_objective_magnification is None:
+				df.loc[idx, 'status'] = 'WSI do not has the attribute of objective magnification.'
+				print('WSI do not has the attribute of objective magnification.')
+			elif magnification:
 				patch_level, custom_downsample = WSI_object.getPatchLevel(magnification)
 				if isinstance(patch_level, dict):
 					df.loc[idx, 'status'] = patch_level['error']
@@ -235,7 +234,12 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 	patch_times /= total
 	stitch_times /= total
 
-	df.to_csv(os.path.join(save_dir, 'process_list_autogen.csv'), index=False)
+	output_path = os.path.join(save_dir, 'process_list_autogen.csv')
+	counter = 1
+	while os.path.exists(output_path):
+		output_path = os.path.join(save_dir, f'process_list_autogen_{counter}.csv')
+		counter += 1
+	df.to_csv(output_path, index=False)
 	print("average segmentation time in s per slide: {}".format(seg_times))
 	print("average patching time in s per slide: {}".format(patch_times))
 	print("average stiching time in s per slide: {}".format(stitch_times))
